@@ -1,22 +1,21 @@
 import express, {json} from "express";
-import { config } from "dotenv";
-import connectDB from "./config/db.js"
+import connectDB from "./config/db.js";
+import dotenv from 'dotenv';
+import cors from 'cors';
 
 import postRouter from './routers/postRouter.js'
-
-config();
-
+dotenv.config();
 connectDB();
-
 const app = express();
+
+app.use(cors({
+  origin: "http://localhost:5173"
+}));
+app.use(express.json());
+
+app.use("/api/posts", postRouter);
+
 const PORT = process.env.PORT || 5000;
-
-app.use(json());
-app.use("api/posts", postRouter);
-
-app.get("/", (req, res) => {
-  res.send("Community Feed API running");
-});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
